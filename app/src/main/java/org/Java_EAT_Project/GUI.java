@@ -9,26 +9,46 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
-// 主页面类
 class HomePage extends JPanel {
     infoStore info = new infoStore();
-    public HomePage(CardLayout cardLayout, JPanel cardPanel) {
+    public HomePage(CardLayout cardLayout, JPanel cardPanel,int frameWidth, int frameHeight) {
+        setLayout(null);
+
+        JLabel label = new JLabel("今天想吃什～麼！");
+        label.setFont(new Font("SimSun", Font.PLAIN, 24));
+        FontMetrics metrics = label.getFontMetrics(label.getFont());
+        int textWidth = metrics.stringWidth(label.getText());
+        int textHeight = metrics.getHeight();
+        label.setBounds((frameWidth-textWidth)/2, (frameHeight-textHeight)/10, textWidth, textHeight);
+        add(label);
+
+        int buttonWidth = (frameWidth-60)/3;
+        int buttonHeight = frameHeight/7*4;
         JButton button1 = new JButton("咖啡廳");
+        button1.setBounds(15,(frameHeight-buttonHeight)/3*2,buttonWidth,buttonHeight);
         JButton button2 = new JButton("餐廳");
+        button2.setBounds(30 + buttonWidth,(frameHeight-buttonHeight)/3*2,buttonWidth,buttonHeight);
         JButton button3 = new JButton("都可以");
+        button3.setBounds(45 + buttonWidth*2,(frameHeight-buttonHeight)/3*2,buttonWidth,buttonHeight);
         
         // 添加按钮点击事件监听器，切换到不同的页面
         button1.addActionListener(e -> {
-            cardLayout.show(cardPanel, "coffee");
             info.choose = 1;
+            QuestionPanel questionPanel = new QuestionPanel((CardLayout) cardPanel.getLayout(), cardPanel);
+            cardPanel.add(questionPanel, "questionPanel");
+            cardLayout.show(cardPanel, "questionPanel");       
         });
         button2.addActionListener(e -> {
-            cardLayout.show(cardPanel, "restaurant");
             info.choose = 2;
+            QuestionPanel questionPanel = new QuestionPanel((CardLayout) cardPanel.getLayout(), cardPanel);
+            cardPanel.add(questionPanel, "questionPanel");
+            cardLayout.show(cardPanel, "questionPanel");
         });
         button3.addActionListener(e -> {
-            cardLayout.show(cardPanel, "both");
             info.choose = 3;
+            QuestionPanel questionPanel = new QuestionPanel((CardLayout) cardPanel.getLayout(), cardPanel);
+            cardPanel.add(questionPanel, "questionPanel");
+            cardLayout.show(cardPanel, "questionPanel");
         });
         
         // 将按钮添加到主页面板
@@ -38,24 +58,160 @@ class HomePage extends JPanel {
     }
 }
 
-// 页面1类
-class Coffee extends JPanel {
-    public Coffee() {
-        add(new JLabel("這是咖啡廳"));
+class QuestionPanel extends JPanel {
+    infoStore info = new infoStore();
+    public QuestionPanel(CardLayout cardLayout, JPanel cardPanel) {
+        
+
+        // 添加標籤
+        if(info.choose == 1){
+            setLayout(new GridLayout(5, 1, 10, 10)); // 10 像素的垂直间隙
+            add(new JLabel("咖啡廳選擇器！", JLabel.CENTER));
+        }else if(info.choose == 2){
+            setLayout(new GridLayout(6, 1, 10, 10)); // 10 像素的垂直间隙
+            add(new JLabel("餐廳選擇器！", JLabel.CENTER));
+        }else{
+            setLayout(new GridLayout(6, 1, 10, 10)); // 10 像素的垂直间隙
+            add(new JLabel("咖啡廳&餐廳 選擇器！", JLabel.CENTER));
+        }
+
+        // 创建并添加四个问题
+        JPanel questionPanel_1 = new JPanel(new FlowLayout(FlowLayout.LEFT));
+        questionPanel_1.add(new JLabel("地區:"));
+        String[] area = {"東區", "中西區", "北區"};
+        for (String s : area) {
+            JCheckBox checkBox = new JCheckBox(s);
+            questionPanel_1.add(checkBox);
+        }
+        add(questionPanel_1);
+
+        if(info.choose == 2 || info.choose == 3){
+            JPanel questionPanel_2 = new JPanel(new FlowLayout(FlowLayout.LEFT));
+            questionPanel_2.add(new JLabel("餐廳類型:"));
+            String[] type = {"中式", "美式", "韓式", "日式", "泰式"};
+            for (String s : type) {
+                JCheckBox checkBox = new JCheckBox(s);
+                questionPanel_2.add(checkBox);
+            }
+            add(questionPanel_2);
+        }
+
+        JPanel questionPanel_3 = new JPanel(new FlowLayout(FlowLayout.LEFT));
+        questionPanel_3.add(new JLabel("價格區間:"));
+        String[] money = {"100~200", "200~400", "400~600", "600以上"};
+        for (String s : money) {
+            JCheckBox checkBox = new JCheckBox(s);
+            questionPanel_3.add(checkBox);
+        }
+        add(questionPanel_3);
+
+        JPanel questionPanel_4 = new JPanel(new FlowLayout(FlowLayout.LEFT));
+        questionPanel_4.add(new JLabel("營業時間:"));
+        String[] time = {"即時", "不限"};
+        for (String s : time) {
+            JCheckBox checkBox = new JCheckBox(s);
+            questionPanel_4.add(checkBox);
+        }
+        add(questionPanel_4);
+
+        // 创建确认按钮
+        JButton confirmButton = new JButton("確認");
+
+        // 添加确认按钮点击事件监听器
+        confirmButton.addActionListener(e -> {
+            Loading loading = new Loading();
+            cardPanel.add(loading, "loading");
+            cardLayout.show(cardPanel, "loading");
+        });        
+
+        // 添加确认按钮到咖啡廳面板
+        add(confirmButton);
     }
 }
 
-// 页面2类
-class Restaurant extends JPanel {
-    public Restaurant() {
-        add(new JLabel("這是餐廳"));
-    }
-}
+class Loading extends JPanel {
+    private int angle = 0; // 旋转角度
+    private Color[] colors; // 圆点颜色
+    private String loadingText = "Loading"; // 加载文本
 
-// 页面3类
-class Both extends JPanel {
-    public Both() {
-        add(new JLabel("這是都可以"));
+    public Loading() {
+        // 设置圆点颜色
+        colors = new Color[10];
+        for (int i = 0; i < colors.length; i++) {
+            int colorValue = 255 - (i * 20); // 逐渐变浅
+            colors[i] = new Color(colorValue, colorValue, colorValue);
+        }
+
+        // 使用定时器每隔一段时间触发一次重绘动作，实现旋转效果和文本轮播
+        Timer timer = new Timer(100, new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                angle += 1; // 每次增加1度
+                updateLoadingText(); // 更新加载文本
+                repaint(); // 重绘
+            }
+        });
+        timer.start(); // 启动定时器
+    }
+
+    private void updateLoadingText() {
+        // 轮播加载文本
+        switch (loadingText) {
+            case "Loading":
+                loadingText = "Loading .";
+                break;
+            case "Loading .":
+                loadingText = "Loading . .";
+                break;
+            case "Loading . .":
+                loadingText = "Loading . . .";
+                break;
+            default:
+                loadingText = "Loading";
+                break;
+        }
+    }
+
+    @Override
+    protected void paintComponent(Graphics g) {
+        super.paintComponent(g);
+
+        Graphics2D g2d = (Graphics2D) g.create();
+
+        // 将坐标原点移动到面板中心
+        int centerX = getWidth() / 2;
+        int centerY = getHeight() / 2;
+        g2d.translate(centerX, centerY);
+
+        // 绘制圆点
+        int radius = 30; // 圆点半径
+        int angleStep = 360 / colors.length; // 圆点之间的角度间隔
+
+        for (int i = 0; i < colors.length; i++) {
+            // 计算圆点的位置
+            double radians = Math.toRadians(angle + i * angleStep);
+            int x = (int) (Math.cos(radians) * radius);
+            int y = (int) (Math.sin(radians) * radius);
+
+            // 绘制圆点
+            g2d.setColor(colors[i]);
+            g2d.fillOval(x - 5, y - 5, 10, 10); // 圆点大小为10
+
+            // 交换位置，达到旋转效果
+            if (i == colors.length - 1) {
+                colors[i] = colors[0];
+            } else {
+                colors[i] = colors[i + 1];
+            }
+        }
+
+        // 绘制加载文本
+        g2d.setColor(Color.BLACK);
+        FontMetrics metrics = g2d.getFontMetrics();
+        int textWidth = metrics.stringWidth(loadingText);
+        g2d.drawString(loadingText, -textWidth / 2, 50); // 文本下移50像素
+
+        g2d.dispose();
     }
 }
 
@@ -79,20 +235,27 @@ public class GUI {
         
         // 创建卡片布局容器
         JPanel cardPanel = new JPanel(new CardLayout());
+
+        function function = new function();
+        function.firstPart(frame,(CardLayout) cardPanel.getLayout(), cardPanel, frameWidth, frameHeight);
         
+    }
+    
+}
+
+class infoStore{
+    public static int choose = 0;//1 Coffee 2 Restaurant 3 Both
+
+
+}
+
+class function{
+    public void firstPart(JFrame frame, CardLayout cardLayout, JPanel cardPanel,int frameWidth, int frameHeight){
         // 创建主页面
-        HomePage homePage = new HomePage((CardLayout) cardPanel.getLayout(), cardPanel);
-        
-        // 创建页面1、2、3
-        Coffee coffee = new Coffee();
-        Restaurant restaurant = new Restaurant();
-        Both both = new Both();
+        HomePage homePage = new HomePage((CardLayout) cardPanel.getLayout(), cardPanel, frameWidth, frameHeight);
         
         // 将页面添加到卡片布局容器中
         cardPanel.add(homePage, "home");
-        cardPanel.add(coffee, "coffee");
-        cardPanel.add(restaurant, "restaurant");
-        cardPanel.add(both, "both");
         
         // 默认显示主页面
         CardLayout cl = (CardLayout) (cardPanel.getLayout());
@@ -104,10 +267,4 @@ public class GUI {
         // 显示框架
         frame.setVisible(true);
     }
-}
-
-class infoStore{
-    public static int choose = 0;//1 Coffee 2 Restaurant 3 Both
-
-
 }
