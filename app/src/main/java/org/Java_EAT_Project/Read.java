@@ -7,11 +7,11 @@ import java.io.*;
 import java.util.*;
 
 public class Read {
-    public static void main(String[] args) {
+    public static void txtProcessing(File file) {
         Map<Integer, Restaurant> restaurantMap = new HashMap<>();
         Map<String, Set<Integer>> filterMap = new HashMap<>();
 
-        try (BufferedReader reader = new BufferedReader(new FileReader("src/main/resources/places.txt"))) {
+        try (BufferedReader reader = new BufferedReader(new FileReader(file))) {
             String line;
             int index = 0;
             while ((line = reader.readLine()) != null) {
@@ -40,6 +40,6 @@ public class Read {
         }
 
         Serialization.serialize(restaurantMap, "places.ser");
-        Serialization.serialize(filterMap, "filter.ser");
+        Serialization.serialize(filterMap, "filter.ser"); 
     }
 }
