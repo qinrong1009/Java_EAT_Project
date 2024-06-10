@@ -3,11 +3,11 @@ package Java_EAT_Project;
 import javax.swing.*;
 import java.awt.*;
 
-
-import javax.swing.*;
-import java.awt.*;
+import java.util.concurrent.CountDownLatch;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.ArrayList;
+
 
 class HomePage extends JPanel {
     infoStore info = new infoStore();
@@ -60,6 +60,7 @@ class HomePage extends JPanel {
 
 class QuestionPanel extends JPanel {
     infoStore info = new infoStore();
+    GUI_function function = new GUI_function();
     public QuestionPanel(CardLayout cardLayout, JPanel cardPanel) {
         
 
@@ -85,8 +86,8 @@ class QuestionPanel extends JPanel {
         }
         add(questionPanel_1);
 
+        JPanel questionPanel_2 = new JPanel(new FlowLayout(FlowLayout.LEFT));
         if(info.choose == 2 || info.choose == 3){
-            JPanel questionPanel_2 = new JPanel(new FlowLayout(FlowLayout.LEFT));
             questionPanel_2.add(new JLabel("餐廳類型:"));
             String[] type = {"中式", "美式", "韓式", "日式", "泰式"};
             for (String s : type) {
@@ -119,6 +120,43 @@ class QuestionPanel extends JPanel {
 
         // 添加确认按钮点击事件监听器
         confirmButton.addActionListener(e -> {
+            Component[] comp_area = questionPanel_1.getComponents();
+            for (Component component : comp_area) {
+                if (component instanceof JCheckBox) {
+                    JCheckBox checkBox = (JCheckBox) component;
+                    boolean isSelected = checkBox.isSelected();
+                    info.area.add(isSelected);
+                }
+            }
+            if(info.choose == 2 || info.choose == 3){
+                Component[] comp_type = questionPanel_2.getComponents();
+                for (Component component : comp_type) {
+                    if (component instanceof JCheckBox) {
+                        JCheckBox checkBox = (JCheckBox) component;
+                        boolean isSelected = checkBox.isSelected();
+                        info.type.add(isSelected);
+                    }
+                }
+            }
+            Component[] comp_money = questionPanel_3.getComponents();
+            for (Component component : comp_money) {
+                if (component instanceof JCheckBox) {
+                    JCheckBox checkBox = (JCheckBox) component;
+                    boolean isSelected = checkBox.isSelected();
+                    info.money.add(isSelected);
+                }
+            }
+            Component[] comp_time = questionPanel_4.getComponents();
+            for (Component component : comp_time) {
+                if (component instanceof JCheckBox) {
+                    JCheckBox checkBox = (JCheckBox) component;
+                    boolean isSelected = checkBox.isSelected();
+                    info.time.add(isSelected);
+                }
+            }
+
+            function.setEnd(1);
+            System.out.println(function.end);
             Loading loading = new Loading();
             cardPanel.add(loading, "loading");
             cardLayout.show(cardPanel, "loading");
@@ -216,7 +254,7 @@ class Loading extends JPanel {
 }
 
 public class GUI {
-    public static void main(String[] args) {
+    public static GUI_function main() {
         // 外觀
         JFrame.setDefaultLookAndFeelDecorated(true);
 
@@ -236,35 +274,74 @@ public class GUI {
         // 创建卡片布局容器
         JPanel cardPanel = new JPanel(new CardLayout());
 
-        function function = new function();
-        function.firstPart(frame,(CardLayout) cardPanel.getLayout(), cardPanel, frameWidth, frameHeight);
-        
+        GUI_function function = new GUI_function(frame,(CardLayout) cardPanel.getLayout(), cardPanel, frameWidth, frameHeight);
+        return function;
+        //function.firstPart();
+    }
+    public infoStore getInfo(){
+        infoStore info = new infoStore();
+        return info;
     }
     
 }
 
 class infoStore{
     public static int choose = 0;//1 Coffee 2 Restaurant 3 Both
-
-
+    public static ArrayList<Boolean> area = new ArrayList<>();
+    public static ArrayList<Boolean> type = new ArrayList<>();
+    public static ArrayList<Boolean> money = new ArrayList<>();
+    public static ArrayList<Boolean> time = new ArrayList<>();
 }
 
-class function{
-    public void firstPart(JFrame frame, CardLayout cardLayout, JPanel cardPanel,int frameWidth, int frameHeight){
+class GUI_function{
+    JFrame frame;
+    CardLayout cardLayout;
+    JPanel cardPanel;
+    int frameWidth; 
+    int frameHeight;
+    public static int end = 0;
+    private static CountDownLatch latch = new CountDownLatch(1);
+    public GUI_function(){
+
+    }
+    public GUI_function(JFrame frame, CardLayout cardLayout, JPanel cardPanel,int frameWidth, int frameHeight){
+        this.frame = frame;
+        this.cardLayout = cardLayout;
+        this.cardPanel = cardPanel;
+        this.frameWidth = frameWidth;
+        this.frameHeight = frameHeight;
+    }
+    public infoStore firstPart(){
         // 创建主页面
-        HomePage homePage = new HomePage((CardLayout) cardPanel.getLayout(), cardPanel, frameWidth, frameHeight);
+        HomePage homePage = new HomePage((CardLayout) this.cardPanel.getLayout(), this.cardPanel, this.frameWidth, this.frameHeight);
         
         // 将页面添加到卡片布局容器中
-        cardPanel.add(homePage, "home");
+        this.cardPanel.add(homePage, "home");
         
         // 默认显示主页面
-        CardLayout cl = (CardLayout) (cardPanel.getLayout());
-        cl.show(cardPanel, "home");
+        CardLayout cl = (CardLayout) (this.cardPanel.getLayout());
+        cl.show(this.cardPanel, "home");
         
         // 添加卡片布局容器到框架
-        frame.add(cardPanel);
+        this.frame.add(this.cardPanel);
         
         // 显示框架
-        frame.setVisible(true);
+        this.frame.setVisible(true);
+
+        
+        try {
+            latch.await();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+        System.out.println("out");
+        return new infoStore();
+    }
+    public void setEnd(int end) {
+        GUI_function.end = end;
+        if (end == 1) {
+            latch.countDown();
+            System.out.println("countdown");
+        }
     }
 }
