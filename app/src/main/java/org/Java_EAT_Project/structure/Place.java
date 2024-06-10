@@ -20,7 +20,7 @@ public class Place implements Serializable {
         this.cuisineType = cuisineType;
         this.rating = rating;
         this.district = district;
-        this.address = address;
+        this.address = address; 
         this.priceRange = priceRange;
         this.openingHours = openingHours;
     }
