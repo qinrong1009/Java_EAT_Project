@@ -1,15 +1,13 @@
 package Java_EAT_Project;
 
-import java.io.BufferedWriter;
-import java.io.File;
-import java.io.FileWriter;
-import java.io.IOException;
+import org.Java_Eat_Project.structure;;
+import org.Java_Eat_Project.serialize;
 
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.util.ArrayList;
-import java.util.List;
+import java.io.*;
+import java.nio.*;
+import java.util.*;
+import javax.swing.*;
+import java.awt.*;
 
 public class main {
     public static void main(String[] args) {
@@ -19,5 +17,13 @@ public class main {
         //getHashMap get = new getHashMap(SET回傳的set)
         //Set.print(getHashMap回傳的HashMap)
         //gui.print(Set.print回傳的東西)
+
+        File placesFile = new File("src/main/resources/places.txt");
+        File placesSerFile = new File("places.ser");
+        File filterSerFile = new File("filter.ser");
+
+        Read.txtProcessing(placesFile);
+
+        GUI gui = new GUI();
     }
 }

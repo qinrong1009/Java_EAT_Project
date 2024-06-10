@@ -11,7 +11,7 @@ public class Read {
         Map<Integer, Restaurant> restaurantMap = new HashMap<>();
         Map<String, Set<Integer>> filterMap = new HashMap<>();
 
-        try (BufferedReader reader = new BufferedReader(new FileReader("src/main/resources/restaurants.txt"))) {
+        try (BufferedReader reader = new BufferedReader(new FileReader("src/main/resources/places.txt"))) {
             String line;
             int index = 0;
             while ((line = reader.readLine()) != null) {
@@ -39,7 +39,7 @@ public class Read {
             e.printStackTrace();
         }
 
-        SerializationUtil.serialize(restaurantMap, "restaurants.ser");
-        SerializationUtil.serialize(filterMap, "filter.ser");
+        Serialization.serialize(restaurantMap, "places.ser");
+        Serialization.serialize(filterMap, "filter.ser");
     }
 }
