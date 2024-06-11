@@ -18,15 +18,14 @@ public class Read {
                 String[] attributes = line.split(",");
                 /*
                     0: name - 餐廳名字
-                    1: type - 餐廳or咖啡廳
-                    2: cuisineType - ＸＸ料理
-                    3: rating - 評分
-                    4: district - 區域
-                    5: address - 地址
-                    6: priceRange - 價位
-                    7: openingHours - 營業時間
+                    1: type - 咖啡廳,ＸＸ料理
+                    2: rating - 評分
+                    3: district - 區域
+                    4: address - 地址
+                    5: priceRange - 價位
+                    6: openingHours - 營業時間
                 */
-                Restaurant restaurant = new Restaurant(attributes[0], attributes[1], attributes[2], Double.parseDouble(attributes[3]), attributes[4], attributes[5], attributes[6], attributes[7]);
+                Restaurant restaurant = new Restaurant(attributes[0], attributes[1],Double.parseDouble(attributes[2]), attributes[3], attributes[4], attributes[5], attributes[6]);
                 restaurantMap.put(index, restaurant);
 
                 filterMap.computeIfAbsent(attributes[1], k -> new HashSet<>()).add(index);
