@@ -1,5 +1,7 @@
 package org.Java_Eat_Project.serialize;
 
+import org.Java_Eat_Project.structure;
+
 import java.io.*;
 import java.util.*;
 
