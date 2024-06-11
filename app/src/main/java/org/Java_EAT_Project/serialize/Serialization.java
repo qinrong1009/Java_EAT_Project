@@ -22,12 +22,4 @@ public class Serialization {
         }
         return object;
     }
-    public static <Map<String, Set<Integer>>> void serializeFilter(Map<String, Set<Integer>> object, String fileName) {
-        try (BufferedOutputStream fileOut = new BufferedOutputStream (new FileOutputStream(fileName))) {
-            ObjectOutputStream out = new ObjectOutputStream(fileOut);
-            out.writeObject(object);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
 }
