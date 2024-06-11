@@ -1,9 +1,10 @@
 package org.Java_Eat_Project.serialize;
 
 import java.io.*;
+import java.util.*;
 
 public class Serialization {
-    public static <Map<Integer, Place>> void serializePlaces(Map<Integer, Place> object, String fileName) {
+    public static void serializePlaces(Map<Integer, Place> object, String fileName) {
         try (BufferedOutputStream fileOut = new BufferedOutputStream (new FileOutputStream(fileName))) {
             ObjectOutputStream out = new ObjectOutputStream(fileOut);
             out.writeObject(object);
@@ -12,7 +13,7 @@ public class Serialization {
         }
     }
 
-    public static <Map<Integer, Place>> Map<Integer, Place> deserializePlaces(String fileName) {
+    public static Map<Integer, Place> deserializePlaces(String fileName) {
         Map<Integer, Place> object = null;
         try (BufferedInputStream fileIn = new BufferedInputStream(new FileInputStream(fileName))) {
             ObjectInputStream in = new ObjectInputStream(fileIn);
