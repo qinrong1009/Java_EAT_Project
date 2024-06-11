@@ -1,6 +1,7 @@
 package org.Java_Eat_Project.serialize;
 
 import java.io.*;
+import java.util.*;
 
 public class Serialization {
     public static <Map<Integer, Place>> void serializePlaces(Map<Integer, Place> object, String fileName) {
@@ -20,6 +21,18 @@ public class Serialization {
         } catch (IOException | ClassNotFoundException e) {
             e.printStackTrace();
         }
+        return object;
+    }
+
+    public static Map<String, Set<Integer>> deserializeFilter(String fileName){
+        Map<String, Set<Integer>> object = null;
+        try(BufferedInputStream bis = new BufferedInputStream(new FileInputStream(fileName))){
+            ObjectInputStream ois = new ObjectInputStream(bis);
+            object = (Map<String, Set<Integer>>) ois.readObject();
+        } catch (IOException | ClassNotFoundException e) {
+            e.printStackTrace();
+        }
+
         return object;
     }
 }
