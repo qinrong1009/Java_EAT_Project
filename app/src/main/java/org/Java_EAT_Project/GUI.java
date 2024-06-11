@@ -7,6 +7,8 @@ import java.util.concurrent.CountDownLatch;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 
 
 class HomePage extends JPanel {
@@ -63,7 +65,6 @@ class QuestionPanel extends JPanel {
     GUI_function function = new GUI_function();
     public QuestionPanel(CardLayout cardLayout, JPanel cardPanel) {
         
-
         // 添加標籤
         if(info.choose == 1){
             setLayout(new GridLayout(5, 1, 10, 10)); // 10 像素的垂直间隙
@@ -79,8 +80,8 @@ class QuestionPanel extends JPanel {
         // 创建并添加四个问题
         JPanel questionPanel_1 = new JPanel(new FlowLayout(FlowLayout.LEFT));
         questionPanel_1.add(new JLabel("地區:"));
-        String[] area = {"東區", "中西區", "北區"};
-        for (String s : area) {
+        String[] district = {"東區", "中西區", "北區"};
+        for (String s : district) {
             JCheckBox checkBox = new JCheckBox(s);
             questionPanel_1.add(checkBox);
         }
@@ -89,8 +90,8 @@ class QuestionPanel extends JPanel {
         JPanel questionPanel_2 = new JPanel(new FlowLayout(FlowLayout.LEFT));
         if(info.choose == 2 || info.choose == 3){
             questionPanel_2.add(new JLabel("餐廳類型:"));
-            String[] type = {"中式", "美式", "韓式", "日式", "泰式"};
-            for (String s : type) {
+            String[] cuisineType = {"中式", "美式", "韓式", "日式", "泰式"};
+            for (String s : cuisineType) {
                 JCheckBox checkBox = new JCheckBox(s);
                 questionPanel_2.add(checkBox);
             }
@@ -99,8 +100,8 @@ class QuestionPanel extends JPanel {
 
         JPanel questionPanel_3 = new JPanel(new FlowLayout(FlowLayout.LEFT));
         questionPanel_3.add(new JLabel("價格區間:"));
-        String[] money = {"100~200", "200~400", "400~600", "600以上"};
-        for (String s : money) {
+        String[] priceRange = {"100~200", "200~400", "400~600", "600以上"};
+        for (String s : priceRange) {
             JCheckBox checkBox = new JCheckBox(s);
             questionPanel_3.add(checkBox);
         }
@@ -108,8 +109,8 @@ class QuestionPanel extends JPanel {
 
         JPanel questionPanel_4 = new JPanel(new FlowLayout(FlowLayout.LEFT));
         questionPanel_4.add(new JLabel("營業時間:"));
-        String[] time = {"即時", "不限"};
-        for (String s : time) {
+        String[] openingHours = {"即時", "不限"};
+        for (String s : openingHours) {
             JCheckBox checkBox = new JCheckBox(s);
             questionPanel_4.add(checkBox);
         }
@@ -120,43 +121,42 @@ class QuestionPanel extends JPanel {
 
         // 添加确认按钮点击事件监听器
         confirmButton.addActionListener(e -> {
-            Component[] comp_area = questionPanel_1.getComponents();
-            for (Component component : comp_area) {
+            Component[] comp_district = questionPanel_1.getComponents();
+            for (Component component : comp_district) {
                 if (component instanceof JCheckBox) {
                     JCheckBox checkBox = (JCheckBox) component;
                     boolean isSelected = checkBox.isSelected();
-                    info.area.add(isSelected);
+                    info.district.add(isSelected);
                 }
             }
             if(info.choose == 2 || info.choose == 3){
-                Component[] comp_type = questionPanel_2.getComponents();
-                for (Component component : comp_type) {
+                Component[] comp_cuisineType = questionPanel_2.getComponents();
+                for (Component component : comp_cuisineType) {
                     if (component instanceof JCheckBox) {
                         JCheckBox checkBox = (JCheckBox) component;
                         boolean isSelected = checkBox.isSelected();
-                        info.type.add(isSelected);
+                        info.cuisineType.add(isSelected);
                     }
                 }
             }
-            Component[] comp_money = questionPanel_3.getComponents();
-            for (Component component : comp_money) {
+            Component[] comp_priceRange = questionPanel_3.getComponents();
+            for (Component component : comp_priceRange) {
                 if (component instanceof JCheckBox) {
                     JCheckBox checkBox = (JCheckBox) component;
                     boolean isSelected = checkBox.isSelected();
-                    info.money.add(isSelected);
+                    info.priceRange.add(isSelected);
                 }
             }
-            Component[] comp_time = questionPanel_4.getComponents();
-            for (Component component : comp_time) {
+            Component[] comp_openingHours = questionPanel_4.getComponents();
+            for (Component component : comp_openingHours) {
                 if (component instanceof JCheckBox) {
                     JCheckBox checkBox = (JCheckBox) component;
                     boolean isSelected = checkBox.isSelected();
-                    info.time.add(isSelected);
+                    info.openingHours.add(isSelected);
                 }
             }
 
             function.setEnd(1);
-            System.out.println(function.end);
             Loading loading = new Loading();
             cardPanel.add(loading, "loading");
             cardLayout.show(cardPanel, "loading");
@@ -276,21 +276,15 @@ public class GUI {
 
         GUI_function function = new GUI_function(frame,(CardLayout) cardPanel.getLayout(), cardPanel, frameWidth, frameHeight);
         return function;
-        //function.firstPart();
     }
-    public infoStore getInfo(){
-        infoStore info = new infoStore();
-        return info;
-    }
-    
 }
 
 class infoStore{
     public static int choose = 0;//1 Coffee 2 Restaurant 3 Both
-    public static ArrayList<Boolean> area = new ArrayList<>();
-    public static ArrayList<Boolean> type = new ArrayList<>();
-    public static ArrayList<Boolean> money = new ArrayList<>();
-    public static ArrayList<Boolean> time = new ArrayList<>();
+    public static ArrayList<Boolean> district = new ArrayList<>();
+    public static ArrayList<Boolean> cuisineType = new ArrayList<>();
+    public static ArrayList<Boolean> priceRange = new ArrayList<>();
+    public static ArrayList<Boolean> openingHours = new ArrayList<>();
 }
 
 class GUI_function{
@@ -328,20 +322,86 @@ class GUI_function{
         // 显示框架
         this.frame.setVisible(true);
 
-        
         try {
             latch.await();
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
-        System.out.println("out");
         return new infoStore();
     }
     public void setEnd(int end) {
         GUI_function.end = end;
         if (end == 1) {
             latch.countDown();
-            System.out.println("countdown");
         }
+    }
+    public void second_part(ArrayList<Integer> order, Map<Integer, ArrayList<String>> restaurantMap){
+        DataShowPage dataShowPage = new DataShowPage(order, restaurantMap);//,(CardLayout) cardPanel.getLayout(), cardPanel
+        cardPanel.add(dataShowPage, "dataShowPage");
+        cardLayout.show(cardPanel, "dataShowPage");    
+    }
+}
+
+class DataShowPage extends JPanel {
+    GUI_function function = new GUI_function();
+    int frameWidth = function.frameWidth;
+    int frameHeight = function.frameHeight;
+    public DataShowPage(ArrayList<Integer> order, Map<Integer, ArrayList<String>> restaurantMap) {
+        setLayout(new BorderLayout());
+        JLabel label = new JLabel("以下是為您推薦的餐廳／咖啡廳！");
+        label.setFont(new Font("SimSun", Font.PLAIN, 24));
+        label.setHorizontalAlignment(SwingConstants.CENTER);
+        label.setBorder(BorderFactory.createEmptyBorder(20, 0, 20, 0));
+        add(label, BorderLayout.NORTH);
+
+        JPanel contentPanel = new JPanel();
+        contentPanel.setLayout(new BoxLayout(contentPanel, BoxLayout.Y_AXIS));
+
+        // 將資料加入到內容面板中
+        for (Integer num : order) {
+            ArrayList<String> details = restaurantMap.get(num);
+            JPanel detailPanel = createDetailPanel(details);
+            contentPanel.add(detailPanel);
+            contentPanel.add(Box.createRigidArea(new Dimension(0, 10))); // 增加每個項目之間的間距
+        }
+
+        JScrollPane scrollPane = new JScrollPane(contentPanel);
+        scrollPane.setBorder(null);
+        scrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
+
+        add(scrollPane, BorderLayout.CENTER);
+    }
+    
+    private JPanel createDetailPanel(ArrayList<String> details) {
+        JPanel panel = new JPanel(new GridLayout(1, 2)); // 左右排列
+        panel.setBorder(BorderFactory.createLineBorder(Color.BLACK)); // 添加边框
+        panel.setBackground(Color.LIGHT_GRAY); // 设置背景色
+        panel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10)); // 整体面板边距
+
+        JPanel infoPanel = new JPanel(new GridLayout(3, 1)); // 左侧面板
+        infoPanel.setBorder(BorderFactory.createEmptyBorder(10, 90, 10, 10)); // 設置邊距
+
+        // 添加左侧面板的内容
+        infoPanel.add(new JLabel(details.get(0))).setFont(new Font("SimSun", Font.BOLD + Font.ITALIC, 16));;
+        infoPanel.add(new JLabel("評分： " + details.get(1)));
+        infoPanel.add(new JLabel("地址： " + details.get(2)));
+
+        JPanel hoursPanel = new JPanel(new BorderLayout()); // 右侧面板
+        hoursPanel.setBorder(BorderFactory.createEmptyBorder(10, 40, 10, 150)); // 設置邊距
+
+        // 添加右侧面板的内容
+        String OpenHours = " ｜\t\n ｜\t\n營\t\n業\t\n時\t\n間\t\n ｜\t\n ｜\t";
+        JLabel hoursTextArea1 = new JLabel("<html><b>" + OpenHours.replaceAll("\n", "<br>") + "</b></html>"); // 设置为粗体
+        hoursPanel.add(hoursTextArea1, BorderLayout.WEST);
+        
+
+        JLabel hoursTextArea2 = new JLabel("<html>" + details.get(3).replaceAll("\n", "<br>") + "</html>"); // 將換行符號轉換為HTML的換行標籤
+        hoursPanel.add(hoursTextArea2, BorderLayout.EAST);
+
+        // 將左右两个面板添加到主要面板中
+        panel.add(infoPanel);
+        panel.add(hoursPanel);
+
+        return panel;
     }
 }
