@@ -2,24 +2,32 @@ package org.Java_Eat_Project.serialize;
 
 import java.io.*;
 
-public class SerializationUtil {
-    public static <T> void serialize(T object, String fileName) {
+public class Serialization {
+    public static <Map<Integer, Place>> void serializePlaces(Map<Integer, Place> object, String fileName) {
         try (BufferedOutputStream fileOut = new BufferedOutputStream (new FileOutputStream(fileName))) {
-            ObjectOutputStream out = new ObjectOutputStream(fileOut)
+            ObjectOutputStream out = new ObjectOutputStream(fileOut);
             out.writeObject(object);
         } catch (IOException e) {
             e.printStackTrace();
         }
     }
 
-    public static <T> T deserialize(String fileName) {
-        T object = null;
+    public static <Map<Integer, Place>> Map<Integer, Place> deserializePlaces(String fileName) {
+        Map<Integer, Place> object = null;
         try (BufferedInputStream fileIn = new BufferedInputStream(new FileInputStream(fileName))) {
-            ObjectInputStream in = new ObjectInputStream(fileIn)
-            object = (T) in.readObject();
+            ObjectInputStream in = new ObjectInputStream(fileIn);
+            object = (Map<Integer, Place>) in.readObject();
         } catch (IOException | ClassNotFoundException e) {
             e.printStackTrace();
         }
         return object;
+    }
+    public static <Map<String, Set<Integer>>> void serializeFilter(Map<String, Set<Integer>> object, String fileName) {
+        try (BufferedOutputStream fileOut = new BufferedOutputStream (new FileOutputStream(fileName))) {
+            ObjectOutputStream out = new ObjectOutputStream(fileOut);
+            out.writeObject(object);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 }
