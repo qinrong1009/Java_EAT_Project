@@ -11,4 +11,4 @@ plugins {
 }
 
 rootProject.name = 'Java_EAT_Project'
-include('app', 'list', 'utilities')
+include('app')
