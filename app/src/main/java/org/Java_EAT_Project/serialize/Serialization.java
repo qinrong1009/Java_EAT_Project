@@ -1,13 +1,13 @@
-package org.Java_Eat_Project.serialize;
+package org.Java_EAT_Project.serialize;
 
-import org.Java_Eat_Project.structure;
+import org.Java_EAT_Project.structure.Place;
 
 import java.io.*;
 import java.util.*;
 
 public class Serialization {
     public static void serializePlaces(Map<Integer, Place> object, String fileName) {
-        try (BufferedOutputStream fileOut = new BufferedOutputStream (new FileOutputStream(fileName))) {
+        try (BufferedOutputStream fileOut = new BufferedOutputStream(new FileOutputStream(fileName))) {
             ObjectOutputStream out = new ObjectOutputStream(fileOut);
             out.writeObject(object);
         } catch (IOException e) {
@@ -15,6 +15,7 @@ public class Serialization {
         }
     }
 
+    @SuppressWarnings("unchecked")
     public static Map<Integer, Place> deserializePlaces(String fileName) {
         Map<Integer, Place> object = null;
         try (BufferedInputStream fileIn = new BufferedInputStream(new FileInputStream(fileName))) {
@@ -26,15 +27,24 @@ public class Serialization {
         return object;
     }
 
-    public static Map<String, Set<Integer>> deserializeFilter(String fileName){
+    public static void serializeFilter(Map<String, Set<Integer>> object, String fileName) {
+        try (BufferedOutputStream fileOut = new BufferedOutputStream(new FileOutputStream(fileName))) {
+            ObjectOutputStream out = new ObjectOutputStream(fileOut);
+            out.writeObject(object);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    @SuppressWarnings("unchecked")
+    public static Map<String, Set<Integer>> deserializeFilter(String fileName) {
         Map<String, Set<Integer>> object = null;
-        try(BufferedInputStream bis = new BufferedInputStream(new FileInputStream(fileName))){
+        try (BufferedInputStream bis = new BufferedInputStream(new FileInputStream(fileName))) {
             ObjectInputStream ois = new ObjectInputStream(bis);
             object = (Map<String, Set<Integer>>) ois.readObject();
         } catch (IOException | ClassNotFoundException e) {
             e.printStackTrace();
         }
-
         return object;
     }
 }
