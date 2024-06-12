@@ -109,7 +109,7 @@ class QuestionPanel extends JPanel {
 
         JPanel questionPanel_4 = new JPanel(new FlowLayout(FlowLayout.LEFT));
         questionPanel_4.add(new JLabel("營業時間:"));
-        String[] openingHours = {"即時", "不限"};
+        String[] openingHours = {"星期一", "星期二", "星期三", "星期四", "星期五", "星期六", "星期日"};
         for (String s : openingHours) {
             JCheckBox checkBox = new JCheckBox(s);
             questionPanel_4.add(checkBox);
@@ -294,6 +294,7 @@ class GUI_function{
     int frameWidth; 
     int frameHeight;
     public static int end = 0;
+    infoStore info = new infoStore();
     private static CountDownLatch latch = new CountDownLatch(1);
     public GUI_function(){
 
@@ -336,19 +337,30 @@ class GUI_function{
         }
     }
     public void second_part(ArrayList<Integer> order, Map<Integer, ArrayList<String>> restaurantMap){
-        DataShowPage dataShowPage = new DataShowPage(order, restaurantMap);//,(CardLayout) cardPanel.getLayout(), cardPanel
+        DataShowPage setframelength = new DataShowPage(this.frameWidth, this.frameHeight);
+        DataShowPage dataShowPage = new DataShowPage(order, restaurantMap, (CardLayout) cardPanel.getLayout(), cardPanel, info.choose);
         cardPanel.add(dataShowPage, "dataShowPage");
         cardLayout.show(cardPanel, "dataShowPage");    
     }
 }
 
 class DataShowPage extends JPanel {
+    infoStore info = new infoStore();
     GUI_function function = new GUI_function();
-    int frameWidth = function.frameWidth;
-    int frameHeight = function.frameHeight;
-    public DataShowPage(ArrayList<Integer> order, Map<Integer, ArrayList<String>> restaurantMap) {
+    public static int frameWidth;
+    public static int frameHeight;
+    public DataShowPage(int frameWidth, int frameHeight){
+        this.frameWidth = frameWidth;
+        this.frameHeight = frameHeight;
+    }
+    public DataShowPage(ArrayList<Integer> order, Map<Integer, ArrayList<String>> restaurantMap, CardLayout cardLayout, JPanel cardPanel, int Mode) {
         setLayout(new BorderLayout());
-        JLabel label = new JLabel("以下是為您推薦的餐廳／咖啡廳！");
+        JLabel label;
+        if(Mode == 1){
+            label = new JLabel("以下是為您推薦的咖啡廳！");
+        }else{
+            label = new JLabel("以下是為您推薦的餐廳！");
+        }
         label.setFont(new Font("SimSun", Font.PLAIN, 24));
         label.setHorizontalAlignment(SwingConstants.CENTER);
         label.setBorder(BorderFactory.createEmptyBorder(20, 0, 20, 0));
@@ -360,9 +372,45 @@ class DataShowPage extends JPanel {
         // 將資料加入到內容面板中
         for (Integer num : order) {
             ArrayList<String> details = restaurantMap.get(num);
+            if((Mode == 1) && (details.get(4) =="咖啡廳")){
+            }else if ((Mode == 2 || Mode == 3) && (details.get(4) != "咖啡廳")){
+            }else{
+                continue;
+            }
             JPanel detailPanel = createDetailPanel(details);
             contentPanel.add(detailPanel);
             contentPanel.add(Box.createRigidArea(new Dimension(0, 10))); // 增加每個項目之間的間距
+        }
+
+        if(Mode == 3){
+            // 创建确认按钮
+            JButton NextPageButton = new JButton("查看咖啡廳推薦清單");
+            NextPageButton.setFont(new Font("SimSun", Font.PLAIN, 16)); // 放大按钮字体
+            int buttonWidth = Math.max(frameWidth / 4, 160);
+            int buttonHeight = Math.max(frameHeight / 7, 55);
+            NextPageButton.setPreferredSize(new Dimension(buttonWidth, buttonHeight));
+            NextPageButton.setMaximumSize(new Dimension(buttonWidth, buttonHeight));
+            NextPageButton.setMinimumSize(new Dimension(buttonWidth, buttonHeight));
+
+
+            // 添加确认按钮点击事件监听器
+            NextPageButton.addActionListener(e -> {
+                DataShowPage dataShowPage_2 = new DataShowPage(order, restaurantMap, (CardLayout) cardPanel.getLayout(), cardPanel, 1);
+                cardPanel.add(dataShowPage_2, "dataShowPage_2");
+                cardLayout.show(cardPanel, "dataShowPage_2");   
+            });        
+
+            // 创建一个面板用于将按钮置中
+            JPanel buttonPanel = new JPanel();
+            buttonPanel.setLayout(new BoxLayout(buttonPanel, BoxLayout.X_AXIS));
+            buttonPanel.add(NextPageButton);
+
+            // 增加按钮上下的边距
+            buttonPanel.setBorder(BorderFactory.createEmptyBorder(0, 0, 10, 0));
+
+            // 添加按钮面板到内容面板
+            contentPanel.add(buttonPanel);
+
         }
 
         JScrollPane scrollPane = new JScrollPane(contentPanel);
@@ -386,16 +434,24 @@ class DataShowPage extends JPanel {
         infoPanel.add(new JLabel("評分： " + details.get(1)));
         infoPanel.add(new JLabel("地址： " + details.get(2)));
 
+        //對齊兩個時段比較長的String
+        JLabel label = new JLabel(details.get(3));
+        FontMetrics metrics = label.getFontMetrics(label.getFont());
+        int textWidth = metrics.stringWidth(label.getText());
+
         JPanel hoursPanel = new JPanel(new BorderLayout()); // 右侧面板
-        hoursPanel.setBorder(BorderFactory.createEmptyBorder(10, 40, 10, 150)); // 設置邊距
+        hoursPanel.setBorder(BorderFactory.createEmptyBorder(10, 40, 10, 909-textWidth)); // 設置邊距
+        
 
         // 添加右侧面板的内容
         String OpenHours = " ｜\t\n ｜\t\n營\t\n業\t\n時\t\n間\t\n ｜\t\n ｜\t";
         JLabel hoursTextArea1 = new JLabel("<html><b>" + OpenHours.replaceAll("\n", "<br>") + "</b></html>"); // 设置为粗体
         hoursPanel.add(hoursTextArea1, BorderLayout.WEST);
-        
 
         JLabel hoursTextArea2 = new JLabel("<html>" + details.get(3).replaceAll("\n", "<br>") + "</html>"); // 將換行符號轉換為HTML的換行標籤
+        if(textWidth >= 830){//對齊兩個時段比較長的String
+            hoursTextArea2.setBorder(BorderFactory.createEmptyBorder(0, 0, 0, 9));
+        }
         hoursPanel.add(hoursTextArea2, BorderLayout.EAST);
 
         // 將左右两个面板添加到主要面板中

@@ -30,7 +30,7 @@ public class main {
         infoStore info = function.firstPart();
         //--------GUI的部分--------//user回傳條件
 
-        //---SET取交集---
+        // ---SET取交集---
         SET set = new SET();
         set.readFilterSet(filterSerFile);
         Set<Integer> userSet = set.filterRestaurant(info.choose, info.cuisineType, info.district, info.priceRange, info.openingHours);
@@ -44,14 +44,14 @@ public class main {
         num_23.add("小古巴漢堡");
         num_23.add("4.6");
         num_23.add("中西區城隍街48號");
-        num_23.add("Mon. 11:00~18:00\nTue. 11:00~18:00\nWed. 11:00~18:00\nThu. 11:00~18:00\nFri. 11:00~18:00\nSat. 11:00~18:00\nSun. closed");
+        num_23.add("Mon. 11:00~18:00 / 17:00~20:00\nTue. 11:00~18:00\nWed. 11:00~18:00\nThu. 11:00~18:00\nFri. 11:00~18:00\nSat. 11:00~18:00\nSun. closed");
         num_23.add("美式");
         ArrayList<String> num_2 = new ArrayList<>();
         num_2.add("SK尚恩美式餐廳");
         num_2.add("4.6");
         num_2.add("中西區城隍街48號");
         num_2.add("Mon. 11:00~18:00\nTue. 11:00~18:00\nWed. 11:00~18:00\nThu. 11:00~18:00\nFri. 11:00~18:00\nSat. 11:00~18:00\nSun. closed");
-        num_2.add("中式");
+        num_2.add("咖啡廳");
         Map<Integer, ArrayList<String>> restaurantMap = new HashMap<>();
         restaurantMap.put(23, num_23);
         restaurantMap.put(2, num_2);
