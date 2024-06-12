@@ -8,7 +8,7 @@ import java.util.*;
 
 public class Read {
     public static void txtProcessing(File file) {
-        Map<Integer, Restaurant> restaurantMap = new HashMap<>();
+        Map<Integer, Place> placeMap = new HashMap<>();
         Map<String, Set<Integer>> filterMap = new HashMap<>();
 
         try (BufferedReader reader = new BufferedReader(new FileReader(file))) {
@@ -25,8 +25,8 @@ public class Read {
                     5: priceRange - 價位
                     6: openingHours - 營業時間
                 */
-                Restaurant restaurant = new Restaurant(attributes[0], attributes[1],Double.parseDouble(attributes[2]), attributes[3], attributes[4], attributes[5], attributes[6]);
-                restaurantMap.put(index, restaurant);
+                Place place = new Place(attributes[0], attributes[1],Double.parseDouble(attributes[2]), attributes[3], attributes[4], attributes[5], attributes[6]);
+                placeMap.put(index, place);
 
                 filterMap.computeIfAbsent(attributes[1], k -> new HashSet<>()).add(index);
                 filterMap.computeIfAbsent(attributes[2], k -> new HashSet<>()).add(index);
@@ -38,7 +38,7 @@ public class Read {
             e.printStackTrace();
         }
 
-        Serialization.serialize(restaurantMap, "places.ser");
-        Serialization.serialize(filterMap, "filter.ser"); 
+        Serialization.serializePlaces(placeMap, "places.ser");
+        Serialization.serializeFilter(filterMap, "filter.ser"); 
     }
 }
