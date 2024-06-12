@@ -1,10 +1,10 @@
-package org.Java_EAT_Project.structure;
+package org.Java_EAT_Project;
 
 import java.io.Serializable;
 
 public class Place implements Serializable {
     private static final long serialVersionUID = 1L;
-    
+
     private String name; //餐廳名字
     private String type; //餐廳or咖啡廳
     private double rating; //評分
@@ -12,42 +12,42 @@ public class Place implements Serializable {
     private String address; //地址
     private String priceRange; //價位
     private String openingHours; //營業時間
-    
-    public Place(String name, String type, double rating, String district, String address, String priceRange, String openingHours){
+
+    public Place(String name, String type, double rating, String district, String address, String priceRange, String openingHours) {
         this.name = name;
         this.type = type;
         this.rating = rating;
         this.district = district;
-        this.address = address; 
+        this.address = address;
         this.priceRange = priceRange;
         this.openingHours = openingHours;
     }
 
-    public String getName(){
+    public String getName() {
         return name;
     }
 
-    public String getType(){
+    public String getType() {
         return type;
     }
 
-    public double getRating(){
+    public double getRating() {
         return rating;
     }
 
-    public String getDistrict(){
+    public String getDistrict() {
         return district;
     }
-    
-    public String getAddress(){
+
+    public String getAddress() {
         return address;
     }
 
-    public String getPriceRange(){
+    public String getPriceRange() {
         return priceRange;
     }
 
-    public String getOpeningHours(){
+    public String getOpeningHours() {
         return openingHours;
     }
 }
