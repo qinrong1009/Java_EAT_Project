@@ -1,12 +1,11 @@
-package org.Java_EAT_Project;
+package org.Java_EAT_Project;//.serialize;
 
 import java.io.*;
-import java.nio.*;
 import java.util.*;
 
 public class Serialization {
     public static void serializePlaces(Map<Integer, Place> object, String fileName) {
-        try (BufferedOutputStream fileOut = new BufferedOutputStream(new FileOutputStream(fileName))) {
+        try (BufferedOutputStream fileOut = new BufferedOutputStream (new FileOutputStream(fileName))) {
             ObjectOutputStream out = new ObjectOutputStream(fileOut);
             out.writeObject(object);
         } catch (IOException e) {
@@ -25,23 +24,15 @@ public class Serialization {
         return object;
     }
 
-    public static void serializeFilter(Map<String, Set<Integer>> object, String fileName) {
-        try (BufferedOutputStream fileOut = new BufferedOutputStream(new FileOutputStream(fileName))) {
-            ObjectOutputStream out = new ObjectOutputStream(fileOut);
-            out.writeObject(object);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
-
-    public static Map<String, Set<Integer>> deserializeFilter(String fileName) {
+    public static Map<String, Set<Integer>> deserializeFilter(String fileName){
         Map<String, Set<Integer>> object = null;
-        try (BufferedInputStream bis = new BufferedInputStream(new FileInputStream(fileName))) {
+        try(BufferedInputStream bis = new BufferedInputStream(new FileInputStream(fileName))){
             ObjectInputStream ois = new ObjectInputStream(bis);
             object = (Map<String, Set<Integer>>) ois.readObject();
         } catch (IOException | ClassNotFoundException e) {
             e.printStackTrace();
         }
+
         return object;
     }
 }

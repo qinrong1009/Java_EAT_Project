@@ -1,5 +1,7 @@
 package org.Java_EAT_Project;
 
+//import org.Java_Eat_Project.structure;
+import org.Java_EAT_Project.Serialization;
 
 import java.io.*;
 import java.nio.*;
@@ -22,12 +24,19 @@ public class main {
 
         Read.txtProcessing(placesFile);
 
-        //--------GUI的部分--------
+        //--------GUI的部分--------//user回傳條件
         GUI gui = new GUI();
         GUI_function function = gui.main();
         infoStore info = function.firstPart();
+        //--------GUI的部分--------//user回傳條件
 
-        //demo data set：手動生一個測資給GUI測試用！
+        //---SET取交集---
+        SET set = new SET();
+        set.readFilterSet(filterSerFile);
+        Set<Integer> userSet = set.filterRestaurant(info.choose, info.cuisineType, info.district, info.priceRange, info.openingHours);
+        //---SET取交集---
+
+        //--------GUI的部分--------//demo data set：手動生一個測資給GUI測試用！
         ArrayList<Integer> order = new ArrayList<>();
         order.add(23);
         order.add(2);
@@ -49,6 +58,13 @@ public class main {
         //demo data set
 
         function.second_part(order, restaurantMap);
-        //--------GUI的部分--------
+        //--------GUI的部分--------//回傳data set給GUI輸出
+
+        //---也算GUI的部分---//data set
+        //"Mon. 11:00~18:00\tTue. 11:00~18:00\t"
+
+        //
+
+        
     }
 }
