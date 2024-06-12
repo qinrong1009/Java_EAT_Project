@@ -63,8 +63,9 @@ class HomePage extends JPanel {
 class QuestionPanel extends JPanel {
     infoStore info = new infoStore();
     GUI_function function = new GUI_function();
+    static int count = 0;
     public QuestionPanel(CardLayout cardLayout, JPanel cardPanel) {
-        
+        this.count += 1;
         // 添加標籤
         if(info.choose == 1){
             setLayout(new GridLayout(5, 1, 10, 10)); // 10 像素的垂直间隙
@@ -156,7 +157,11 @@ class QuestionPanel extends JPanel {
                 }
             }
 
-            function.setEnd(1);
+            if(this.count == 1){
+                function.setEnd(1);
+            }else{
+                function.setEnd(2);
+            }
             Loading loading = new Loading();
             cardPanel.add(loading, "loading");
             cardLayout.show(cardPanel, "loading");
@@ -285,6 +290,10 @@ class infoStore{
     public static ArrayList<Boolean> cuisineType = new ArrayList<>();
     public static ArrayList<Boolean> priceRange = new ArrayList<>();
     public static ArrayList<Boolean> openingHours = new ArrayList<>();
+    public static boolean END = false;
+    public boolean getEND(){
+        return this.END;
+    }
 }
 
 class GUI_function{
@@ -293,9 +302,9 @@ class GUI_function{
     JPanel cardPanel;
     int frameWidth; 
     int frameHeight;
-    public static int end = 0;
     infoStore info = new infoStore();
-    private static CountDownLatch latch = new CountDownLatch(1);
+    private static CountDownLatch firstLatch = new CountDownLatch(1);
+    private static CountDownLatch secondLatch;
     public GUI_function(){
 
     }
@@ -312,78 +321,113 @@ class GUI_function{
         
         // 将页面添加到卡片布局容器中
         this.cardPanel.add(homePage, "home");
-        
+
         // 默认显示主页面
         CardLayout cl = (CardLayout) (this.cardPanel.getLayout());
         cl.show(this.cardPanel, "home");
-        
+
         // 添加卡片布局容器到框架
         this.frame.add(this.cardPanel);
-        
+
         // 显示框架
         this.frame.setVisible(true);
 
         try {
-            latch.await();
+            firstLatch.await();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+
+        return new infoStore();
+    }
+    public void setEnd(int end) {
+        if (end == 1) {
+            firstLatch.countDown();
+        }else if(end == 2){
+            secondLatch.countDown();
+        }
+    }
+    public infoStore second_part(ArrayList<Integer> order, Map<Integer, ArrayList<String>> restaurantMap, GUI_function function){
+        if(function == null){
+            System.out.println("Null");
+        }
+        int numCoffee = (int) restaurantMap.entrySet().stream()
+        .filter(entry -> entry.getValue().get(4).equals("咖啡廳"))
+        .count();
+        int numRestaurant = order.size() - numCoffee;
+        DataShowPage setframelength = new DataShowPage(this.frameWidth, this.frameHeight, numCoffee, numRestaurant,function);
+        DataShowPage dataShowPage = new DataShowPage(order, restaurantMap, frame, (CardLayout) cardPanel.getLayout(), cardPanel, info.choose);
+        cardPanel.add(dataShowPage, "dataShowPage");
+        cardLayout.show(cardPanel, "dataShowPage"); 
+        this.secondLatch = new CountDownLatch(1);   
+        try {
+            secondLatch.await();
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
         return new infoStore();
     }
-    public void setEnd(int end) {
-        GUI_function.end = end;
-        if (end == 1) {
-            latch.countDown();
-        }
-    }
-    public void second_part(ArrayList<Integer> order, Map<Integer, ArrayList<String>> restaurantMap){
-        DataShowPage setframelength = new DataShowPage(this.frameWidth, this.frameHeight);
-        DataShowPage dataShowPage = new DataShowPage(order, restaurantMap, (CardLayout) cardPanel.getLayout(), cardPanel, info.choose);
-        cardPanel.add(dataShowPage, "dataShowPage");
-        cardLayout.show(cardPanel, "dataShowPage");    
-    }
 }
 
 class DataShowPage extends JPanel {
     infoStore info = new infoStore();
-    GUI_function function = new GUI_function();
+    public static GUI_function function;
     public static int frameWidth;
     public static int frameHeight;
-    public DataShowPage(int frameWidth, int frameHeight){
+    public static int numCoffee;
+    public static int numRestaurant;
+    public DataShowPage(int frameWidth, int frameHeight, int numCoffee, int numRestaurant, GUI_function function){
         this.frameWidth = frameWidth;
         this.frameHeight = frameHeight;
+        this.numCoffee = numCoffee;
+        this.numRestaurant = numRestaurant;
+        this.function = function;
     }
-    public DataShowPage(ArrayList<Integer> order, Map<Integer, ArrayList<String>> restaurantMap, CardLayout cardLayout, JPanel cardPanel, int Mode) {
+    public DataShowPage(ArrayList<Integer> order, Map<Integer, ArrayList<String>> restaurantMap,JFrame frame, CardLayout cardLayout, JPanel cardPanel, int Mode) {
         setLayout(new BorderLayout());
+
         JLabel label;
         if(Mode == 1){
             label = new JLabel("以下是為您推薦的咖啡廳！");
+            label.setFont(new Font("SimSun", Font.PLAIN, 24));
+            label.setHorizontalAlignment(SwingConstants.CENTER);
+            label.setBorder(BorderFactory.createEmptyBorder(20, 0, 20, 0));
+            add(label, BorderLayout.NORTH);
         }else{
             label = new JLabel("以下是為您推薦的餐廳！");
+            label.setFont(new Font("SimSun", Font.PLAIN, 24));
+            label.setHorizontalAlignment(SwingConstants.CENTER);
+            label.setBorder(BorderFactory.createEmptyBorder(20, 0, 20, 0));
+            add(label, BorderLayout.NORTH);
         }
-        label.setFont(new Font("SimSun", Font.PLAIN, 24));
-        label.setHorizontalAlignment(SwingConstants.CENTER);
-        label.setBorder(BorderFactory.createEmptyBorder(20, 0, 20, 0));
-        add(label, BorderLayout.NORTH);
 
         JPanel contentPanel = new JPanel();
         contentPanel.setLayout(new BoxLayout(contentPanel, BoxLayout.Y_AXIS));
 
         // 將資料加入到內容面板中
-        for (Integer num : order) {
-            ArrayList<String> details = restaurantMap.get(num);
-            if((Mode == 1) && (details.get(4) =="咖啡廳")){
-            }else if ((Mode == 2 || Mode == 3) && (details.get(4) != "咖啡廳")){
-            }else{
-                continue;
+        if((Mode == 1 && numCoffee != 0) || (Mode != 1 && numRestaurant != 0)){
+            for (Integer num : order) {
+                ArrayList<String> details = restaurantMap.get(num);
+                if((Mode == 1) && (details.get(4) =="咖啡廳")){
+                }else if ((Mode == 2 || Mode == 3) && (details.get(4) != "咖啡廳")){
+                }else{
+                    continue;
+                }
+                JPanel detailPanel = createDetailPanel(details);
+                contentPanel.add(detailPanel);
+                contentPanel.add(Box.createRigidArea(new Dimension(0, 10))); // 增加每個項目之間的間距
             }
-            JPanel detailPanel = createDetailPanel(details);
-            contentPanel.add(detailPanel);
-            contentPanel.add(Box.createRigidArea(new Dimension(0, 10))); // 增加每個項目之間的間距
+        }else{//沒有結果
+            JLabel textLabel = new JLabel("無符合條件的搜尋結果❌");
+            textLabel.setFont(new Font("Arial", Font.PLAIN, 27));
+            textLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
+            textLabel.setBorder(BorderFactory.createEmptyBorder(90, 0, 40, 0));
+            // contentPanel.add(xLabel);
+            contentPanel.add(textLabel);
         }
 
         if(Mode == 3){
-            // 创建确认按钮
+            // 创建查看咖啡廳按钮
             JButton NextPageButton = new JButton("查看咖啡廳推薦清單");
             NextPageButton.setFont(new Font("SimSun", Font.PLAIN, 16)); // 放大按钮字体
             int buttonWidth = Math.max(frameWidth / 4, 160);
@@ -393,9 +437,9 @@ class DataShowPage extends JPanel {
             NextPageButton.setMinimumSize(new Dimension(buttonWidth, buttonHeight));
 
 
-            // 添加确认按钮点击事件监听器
+            // 添加查看咖啡廳按钮点击事件监听器
             NextPageButton.addActionListener(e -> {
-                DataShowPage dataShowPage_2 = new DataShowPage(order, restaurantMap, (CardLayout) cardPanel.getLayout(), cardPanel, 1);
+                DataShowPage dataShowPage_2 = new DataShowPage(order, restaurantMap, frame, (CardLayout) cardPanel.getLayout(), cardPanel, 1);
                 cardPanel.add(dataShowPage_2, "dataShowPage_2");
                 cardLayout.show(cardPanel, "dataShowPage_2");   
             });        
@@ -412,7 +456,59 @@ class DataShowPage extends JPanel {
             contentPanel.add(buttonPanel);
 
         }
+        if((Mode == 1) || (Mode == 2) || (Mode == 1 && info.choose == 3)){
+            // 创建再來一次按钮
+            JButton NextPageButton = new JButton("再選一次");
+            NextPageButton.setFont(new Font("SimSun", Font.PLAIN, 16)); // 放大按钮字体
+            int buttonWidth = Math.max(frameWidth / 4, 160);
+            int buttonHeight = Math.max(frameHeight / 7, 55);
+            NextPageButton.setPreferredSize(new Dimension(buttonWidth, buttonHeight));
+            NextPageButton.setMaximumSize(new Dimension(buttonWidth, buttonHeight));
+            NextPageButton.setMinimumSize(new Dimension(buttonWidth, buttonHeight));
 
+            // 创建結束按钮
+            JButton EndButton = new JButton("結束使用");
+            EndButton.setFont(new Font("SimSun", Font.PLAIN, 16)); // 放大按钮字体
+            int buttonWidth_2 = Math.max(frameWidth / 4, 160);
+            int buttonHeight_2 = Math.max(frameHeight / 7, 55);
+            EndButton.setPreferredSize(new Dimension(buttonWidth_2, buttonHeight_2));
+            EndButton.setMaximumSize(new Dimension(buttonWidth_2, buttonHeight_2));
+            EndButton.setMinimumSize(new Dimension(buttonWidth_2, buttonHeight_2));
+
+            // 添加再來一次按钮点击事件监听器
+            NextPageButton.addActionListener(e -> {
+                info.choose = 0;
+                info.district.clear();
+                info.cuisineType.clear();
+                info.priceRange.clear();
+                info.openingHours.clear();
+                cardLayout.show(cardPanel, "home");
+            });      
+            
+            // 添加結束按钮点击事件监听器
+            EndButton.addActionListener(e -> {
+                frame.dispose();
+                info.END = true;
+                function.setEnd(2);
+            });
+
+            // 創建一個面板用於將按鈕置中
+            JPanel buttonPanel = new JPanel();
+            buttonPanel.setLayout(new BoxLayout(buttonPanel, BoxLayout.X_AXIS));
+            
+            // 增加按鈕之間的間距
+            buttonPanel.add(Box.createHorizontalGlue());
+            buttonPanel.add(NextPageButton);
+            buttonPanel.add(Box.createRigidArea(new Dimension(20, 0))); // 按鈕之間的固定間距
+            buttonPanel.add(EndButton);
+            buttonPanel.add(Box.createHorizontalGlue());
+        
+            // 增加按鈕上下的邊距
+            buttonPanel.setBorder(BorderFactory.createEmptyBorder(0, 0, 10, 0));
+
+            // 添加按钮面板到内容面板
+            contentPanel.add(buttonPanel);
+        }
         JScrollPane scrollPane = new JScrollPane(contentPanel);
         scrollPane.setBorder(null);
         scrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
