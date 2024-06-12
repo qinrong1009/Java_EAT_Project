@@ -1,4 +1,4 @@
-package Java_EAT_Project;
+package org.Java_EAT_Project;
 
 import javax.swing.*;
 import java.awt.*;
