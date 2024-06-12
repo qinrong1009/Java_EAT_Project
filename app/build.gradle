@@ -37,11 +37,6 @@ java {
     }
 }
 
-javafx {
-    modules("javafx.controls", "javafx.fxml")
-    version="21"
-}
-
 application {
     // Define the main class for the application.
     mainClass = 'org.Java_EAT_Project.main'
