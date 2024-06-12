@@ -1,4 +1,4 @@
-package org.Java_Eat_Project.structure;
+package org.Java_EAT_Project;
 
 import java.io.Serializable;
 
