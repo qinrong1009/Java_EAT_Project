@@ -87,7 +87,7 @@ public class main {
         //
     }
 
-    private HashMap<Integer, ArrayList<String>> orderRestaurant(ArrayList<Place> restaurantList){
+    private static HashMap<Integer, ArrayList<String>> orderRestaurant(ArrayList<Place> restaurantList){
         HashMap<Integer, ArrayList<String>> restaurantMap = new HashMap<>();
             
         for(int i = 0; i < restaurantList.size(); i++){
