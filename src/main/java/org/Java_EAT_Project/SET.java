@@ -3,7 +3,7 @@ package org.Java_EAT_Project;
 //import org.Java_EAT_Project.Serialization.*;
 
 import java.util.*;
-import com.google.common.collect.Sets;
+import java.util.Set; 
 import java.io.File;
 
 public class SET {
@@ -13,7 +13,7 @@ public class SET {
                                     List.of("100", "200", "400", "600"),
                                     List.of("Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"));
 
-    public void readFilterSet(File file){
+    public SET(File file){
         this.filterSet = Serialization.deserializeFilter(file.getName());
     }
 
@@ -44,14 +44,14 @@ public class SET {
             Set<Integer> set = new HashSet<>();
             for(int j = 0; j < filterName.get(i).size(); j++){
                 if(userfilter.get(i).get(j)){
-                    set = Sets.union(set, filterSet.get(filterName.get(i).get(j)));
+                    set.addAll(filterSet.get(filterName.get(i).get(j)));
                 }
             }
             if(i == 0){
                 userSet = set;
             }
             else{
-                userSet = Sets.intersection(userSet, set);
+                userSet.retainAll(set);
             }
         }
 

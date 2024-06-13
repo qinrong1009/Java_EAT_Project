@@ -24,7 +24,11 @@ public class main {
         File filterSerFile = new File("filter.ser");
 
         Read.txtProcessing(placesFile);
-
+        SET SET = new SET(filterSerFile);
+        getHashMap getHashMap = new getHashMap();
+        getHashMap.readHashMap(placesSerFile.getName());
+        
+        /*
         //--------GUI的部分--------demo data set：手動生一個測資給GUI測試用！
         ArrayList<Integer> order = new ArrayList<>();
         order.add(23);
@@ -45,6 +49,7 @@ public class main {
         restaurantMap.put(23, num_23);
         restaurantMap.put(2, num_2);
         //--------GUI的部分--------回傳data set給GUI輸出
+        */
 
 
         //--------GUI的部分--------//user回傳條件
@@ -54,7 +59,15 @@ public class main {
         System.out.println("arrarlist:" + info.district.get(0));
 
         while(info.END == false){//第二次後無限迴圈，直到按結束
-            info = function.second_part(order, restaurantMap, function);
+            //---SET---
+            Set<Integer> userSet = SET.filterRestaurant(info.choose, info.cuisineType, info.district, info.priceRange, info.openingHours);
+            ArrayList<Place> restaurantList = getHashMap.getHashMap(userSet);
+            ArrayList<Integer> order = new ArrayList<>();
+            for(int i = 0; i < restaurantList.size(); i++){
+                order.add(i);
+            }
+            //---SET---
+            info = function.second_part(order, orderRestaurant(restaurantList), function);
             //第二部分顯示結果後，若再來一次會直接做第一部分的問題，然後回傳新的info。
             System.out.println("arrarlist:" + info.district.get(0));
         }
@@ -62,9 +75,9 @@ public class main {
         //--------GUI的部分--------user回傳條件
 
         // ---SET取交集---
-        SET set = new SET();
-        set.readFilterSet(filterSerFile);
-        Set<Integer> userSet = set.filterRestaurant(info.choose, info.cuisineType, info.district, info.priceRange, info.openingHours);
+        //SET set = new SET(filterSerFile);
+        //set.readFilterSet(filterSerFile);
+        
         //---SET取交集---
 
 
@@ -72,7 +85,26 @@ public class main {
         //"Mon. 11:00~18:00\tTue. 11:00~18:00\t"
 
         //
+    }
+
+    private HashMap<Integer, ArrayList<String>> orderRestaurant(ArrayList<Place> restaurantList){
+        HashMap<Integer, ArrayList<String>> restaurantMap = new HashMap<>();
+            
+        for(int i = 0; i < restaurantList.size(); i++){
+            Place place = restaurantList.get(i);
+            ArrayList<String> restaurant = new ArrayList<>();
+            restaurant.add(place.getName());
+            restaurant.add(Double.toString(place.getRating()));
+            restaurant.add(place.getAddress());
+            restaurant.add(place.getOpeningHours());
+            restaurant.add(place.getType());
+
+            restaurantMap.put(i, restaurant);
+        }
+
+        return restaurantMap;
+    }
 
         
-    }
+    
 }
