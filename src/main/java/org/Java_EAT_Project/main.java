@@ -100,6 +100,7 @@ public class Main {
             restaurant.add(place.getAddress());
             restaurant.add(place.getOpeningHours().replaceAll(";","\n"));
             restaurant.add(place.getType());
+            System.out.println(restaurant);
 
             restaurantMap.put(i, restaurant);
         }
