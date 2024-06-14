@@ -15,6 +15,7 @@ public class SET {
 
     public SET(File file){
         this.filterSet = Serialization.deserializeFilter(file.getName());
+        //System.out.println(filterSet);
     }
 
     public Set<Integer> filterRestaurant(int choose, ArrayList<Boolean> cuisineType, ArrayList<Boolean> district, ArrayList<Boolean> priceRange, ArrayList<Boolean> openingHour){
@@ -43,8 +44,11 @@ public class SET {
         for(int i = 0; i < filterName.size(); i++){
             Set<Integer> set = new HashSet<>();
             for(int j = 0; j < filterName.get(i).size(); j++){
+                //System.out.println(filterName.get(i).get(j));
                 if(userfilter.get(i).get(j) && filterSet.get(filterName.get(i).get(j)) != null){
+                    //System.out.println(filterSet.get(filterName.get(i).get(j)));
                     set.addAll(filterSet.get(filterName.get(i).get(j)));
+                    //System.out.println(set);
                 }
             }
             if(set.isEmpty()){
@@ -62,6 +66,7 @@ public class SET {
             }
         }
 
+        //System.out.println(userSet);
         return userSet;
     }
     
