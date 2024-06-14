@@ -61,9 +61,11 @@ public class Main {
         while(info.END == false){//第二次後無限迴圈，直到按結束
             //---SET---
             Set<Integer> userSet = SET.filterRestaurant(info.choose, info.cuisineType, info.district, info.priceRange, info.openingHours);
+            //System.out.println(userSet);
             ArrayList<Place> restaurantList = getHashMap.getHashMap(userSet);
+            System.out.println(restaurantList);
             ArrayList<Integer> order = new ArrayList<>();
-            for(int i = 0; i < restaurantList.size(); i++){
+            for(int i = restaurantList.size()-1; i >= 0 ; i--){
                 order.add(i);
             }
             //---SET---
@@ -96,7 +98,7 @@ public class Main {
             restaurant.add(place.getName());
             restaurant.add(Double.toString(place.getRating()));
             restaurant.add(place.getAddress());
-            restaurant.add(place.getOpeningHours().replaceAll("\t","\n"));
+            restaurant.add(place.getOpeningHours().replaceAll(";","\n"));
             restaurant.add(place.getType());
 
             restaurantMap.put(i, restaurant);

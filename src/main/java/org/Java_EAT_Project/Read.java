@@ -31,13 +31,14 @@ public class Read {
                 filterMap.computeIfAbsent(attributes[1], k -> new HashSet<>()).add(index);
                 filterMap.computeIfAbsent(attributes[3], k -> new HashSet<>()).add(index);
                 filterMap.computeIfAbsent(attributes[5], k -> new HashSet<>()).add(index);
-                String[] openingTime = attributes[6].split("\t");
+                String[] openingTime = attributes[6].split(";");
                 for (String day : openingTime){
-                    if(day.substring(day.indexOf(".") + 2).equals("closed")){
+                    //System.out.println(day);
+                    if(!day.substring(day.indexOf(".") + 1).equals("Closed")){
                         filterMap.computeIfAbsent(day.substring(0, day.indexOf(".")), k -> new HashSet<>()).add(index);
                     }
                 }
-                filterMap.computeIfAbsent(attributes[6], k -> new HashSet<>()).add(index);
+                //filterMap.computeIfAbsent(attributes[6], k -> new HashSet<>()).add(index);
                 index++;
             }
         } catch (IOException e) {
