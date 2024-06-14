@@ -408,8 +408,8 @@ class DataShowPage extends JPanel {
         if((Mode == 1 && numCoffee != 0) || (Mode != 1 && numRestaurant != 0)){
             for (Integer num : order) {
                 ArrayList<String> details = restaurantMap.get(num);
-                if((Mode == 1) && (details.get(4) =="咖啡廳")){
-                }else if ((Mode == 2 || Mode == 3) && (details.get(4) != "咖啡廳")){
+                if((Mode == 1) && (details.get(4).equals("咖啡廳"))){
+                }else if ((Mode == 2 || Mode == 3) && !(details.get(4).equals("咖啡廳"))){
                 }else{
                     continue;
                 }

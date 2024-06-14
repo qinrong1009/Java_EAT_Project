@@ -21,7 +21,7 @@ public class SET {
     public Set<Integer> filterRestaurant(int choose, ArrayList<Boolean> cuisineType, ArrayList<Boolean> district, ArrayList<Boolean> priceRange, ArrayList<Boolean> openingHour){
         ArrayList<ArrayList<Boolean>> userfilter = new ArrayList<>();
         if(cuisineType.isEmpty()){
-            System.out.println("isEmpty");
+            // System.out.println("isEmpty");
             for(int i = 0; i < 5; i++){
                 cuisineType.add(false);
             }
@@ -50,11 +50,11 @@ public class SET {
         for(int i = 0; i < filterName.size(); i++){
             Set<Integer> set = new HashSet<>();
             for(int j = 0; j < filterName.get(i).size(); j++){
-                System.out.println(filterName.get(i).get(j));
+                // System.out.println(filterName.get(i).get(j));
                 if(userfilter.get(i).get(j) && filterSet.get(filterName.get(i).get(j)) != null){
-                    System.out.println(filterSet.get(filterName.get(i).get(j)));
+                    // System.out.println(filterSet.get(filterName.get(i).get(j)));
                     set.addAll(filterSet.get(filterName.get(i).get(j)));
-                    System.out.println(set);
+                    // System.out.println(set);
                 }
             }
             if(set.isEmpty()){
@@ -72,7 +72,7 @@ public class SET {
             }
         }
 
-        System.out.println("final: "+userSet);
+        // System.out.println("final: "+userSet);
         return userSet;
     }
     

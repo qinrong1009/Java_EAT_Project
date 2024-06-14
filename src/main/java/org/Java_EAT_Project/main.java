@@ -63,15 +63,17 @@ public class Main {
             Set<Integer> userSet = SET.filterRestaurant(info.choose, info.cuisineType, info.district, info.priceRange, info.openingHours);
             //System.out.println(userSet);
             ArrayList<Place> restaurantList = getHashMap.getHashMap(userSet);
-            System.out.println(restaurantList);
+            // System.out.println(restaurantList);
             ArrayList<Integer> order = new ArrayList<>();
             for(int i = restaurantList.size()-1; i >= 0 ; i--){
                 order.add(i);
             }
             //---SET---
-            info = function.second_part(order, orderRestaurant(restaurantList), function);
+            HashMap<Integer, ArrayList<String>> restaurantMap = orderRestaurant(restaurantList);
+            // System.out.println(restaurantMap);
+            info = function.second_part(order, restaurantMap, function);
             //第二部分顯示結果後，若再來一次會直接做第一部分的問題，然後回傳新的info。
-            System.out.println("arrarlist:" + info.district.get(0));
+            // System.out.println("arrarlist:" + info.district.get(0));
         }
         System.exit(0);
         //--------GUI的部分--------user回傳條件
@@ -100,7 +102,7 @@ public class Main {
             restaurant.add(place.getAddress());
             restaurant.add(place.getOpeningHours().replaceAll(";","\n"));
             restaurant.add(place.getType());
-            System.out.println(restaurant);
+            // System.out.println(restaurant);
 
             restaurantMap.put(i, restaurant);
         }
