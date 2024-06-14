@@ -96,7 +96,7 @@ public class Main {
             restaurant.add(place.getName());
             restaurant.add(Double.toString(place.getRating()));
             restaurant.add(place.getAddress());
-            restaurant.add(place.getOpeningHours());
+            restaurant.add(place.getOpeningHours().replaceAll("\t","\n"));
             restaurant.add(place.getType());
 
             restaurantMap.put(i, restaurant);

@@ -43,12 +43,19 @@ public class SET {
         for(int i = 0; i < filterName.size(); i++){
             Set<Integer> set = new HashSet<>();
             for(int j = 0; j < filterName.get(i).size(); j++){
-                if(userfilter.get(i).get(j)){
+                if(userfilter.get(i).get(j) && filterSet.get(filterName.get(i).get(j)) != null){
                     set.addAll(filterSet.get(filterName.get(i).get(j)));
                 }
             }
+            if(set.isEmpty()){
+                userSet.clear();
+                return userSet;
+            }
             if(i == 0){
                 userSet.addAll(set);
+            }
+            else if(userSet.isEmpty()){
+                return userSet;   
             }
             else{
                 userSet.retainAll(set);
