@@ -10,7 +10,7 @@ import java.util.*;
 import javax.swing.*;
 import java.awt.*;
 
-public class main {
+public class Main {
     public static void main(String[] args) {
         //解序列並得到存所有資料的HashMap
         //GUI gui = new GUI();
@@ -19,7 +19,7 @@ public class main {
         //Set.print(getHashMap回傳的HashMap)
         //gui.print(Set.print回傳的東西)
 
-        File placesFile = new File("src/main/resources/places.txt");
+        File placesFile = new File("/Users/melodyliu/Desktop/Java_EAT_Project/src/main/resources/places.txt");
         File placesSerFile = new File("places.ser");
         File filterSerFile = new File("filter.ser");
 
