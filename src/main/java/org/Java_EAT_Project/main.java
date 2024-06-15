@@ -10,7 +10,7 @@ import java.util.*;
 import javax.swing.*;
 import java.awt.*;
 
-public class Main {
+public class main {
     public static void main(String[] args) {
         //解序列並得到存所有資料的HashMap
         //GUI gui = new GUI();
@@ -19,7 +19,7 @@ public class Main {
         //Set.print(getHashMap回傳的HashMap)
         //gui.print(Set.print回傳的東西)
 
-        File placesFile = new File("/Users/melodyliu/Desktop/Java_EAT_Project/src/main/resources/places.txt");
+        File placesFile = new File("/Users/yeqinrong/Desktop/Java_EAT_Project/src/main/resources/places.txt");
         File placesSerFile = new File("places.ser");
         File filterSerFile = new File("filter.ser");
 
@@ -56,7 +56,7 @@ public class Main {
         GUI gui = new GUI();
         GUI_function function = gui.main();
         infoStore info = function.firstPart();//第一次user回傳
-        System.out.println("arrarlist:" + info.district.get(0));
+        // System.out.println("arrarlist:" + info.district.get(0));
 
         while(info.END == false){//第二次後無限迴圈，直到按結束
             //---SET---
@@ -102,14 +102,10 @@ public class Main {
             restaurant.add(place.getAddress());
             restaurant.add(place.getOpeningHours().replaceAll(";","\n"));
             restaurant.add(place.getType());
-            // System.out.println(restaurant);
 
             restaurantMap.put(i, restaurant);
         }
 
         return restaurantMap;
-    }
-
-        
-    
+    }  
 }

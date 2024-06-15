@@ -523,7 +523,7 @@ class DataShowPage extends JPanel {
         panel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10)); // 整体面板边距
 
         JPanel infoPanel = new JPanel(new GridLayout(3, 1)); // 左侧面板
-        infoPanel.setBorder(BorderFactory.createEmptyBorder(10, 90, 10, 10)); // 設置邊距
+        infoPanel.setBorder(BorderFactory.createEmptyBorder(10, 75, 10, 10)); // 設置邊距
 
         // 添加左侧面板的内容
         infoPanel.add(new JLabel(details.get(0))).setFont(new Font("SimSun", Font.BOLD + Font.ITALIC, 16));;
@@ -536,7 +536,7 @@ class DataShowPage extends JPanel {
         int textWidth = metrics.stringWidth(label.getText());
 
         JPanel hoursPanel = new JPanel(new BorderLayout()); // 右侧面板
-        hoursPanel.setBorder(BorderFactory.createEmptyBorder(10, 40, 10, 909-textWidth)); // 設置邊距
+        hoursPanel.setBorder(BorderFactory.createEmptyBorder(10, 20, 10, 30)); // 設置邊距
         
 
         // 添加右侧面板的内容
@@ -545,10 +545,9 @@ class DataShowPage extends JPanel {
         hoursPanel.add(hoursTextArea1, BorderLayout.WEST);
 
         JLabel hoursTextArea2 = new JLabel("<html>" + details.get(3).replaceAll("\n", "<br>") + "</html>"); // 將換行符號轉換為HTML的換行標籤
-        if(textWidth >= 830){//對齊兩個時段比較長的String
-            hoursTextArea2.setBorder(BorderFactory.createEmptyBorder(0, 0, 0, 9));
-        }
-        hoursPanel.add(hoursTextArea2, BorderLayout.EAST);
+        hoursTextArea2.setBorder(BorderFactory.createEmptyBorder(0, 30, 0, 0));
+
+        hoursPanel.add(hoursTextArea2, BorderLayout.CENTER);
 
         // 將左右两个面板添加到主要面板中
         panel.add(infoPanel);
